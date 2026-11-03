@@ -1133,7 +1133,7 @@ function init(){const cv=document.getElementById("pcv"),ov=document.getElementBy
    if(ids.length){sel={ids};drawSel()}else clearOv();return}
   clearTimeout(holdT);
   if(live){let s=live[3];if(!live.sh&&s.length>3){const o=[s[0],s[1],s[2]];for(let i=3;i<s.length;i+=3)if(Math.hypot(s[i]-o[o.length-3],s[i+1]-o[o.length-2])>=.8)o.push(s[i],s[i+1],s[i+2]);if(live[0]==="p")for(let pass=0;pass<2;pass++){const n=o.length/3;if(n<4)break;const q=o.slice();for(let i=1;i<n-1;i++){q[i*3]=Math.round((o[i*3-3]+2*o[i*3]+o[i*3+3])*2.5)/10;q[i*3+1]=Math.round((o[i*3-2]+2*o[i*3+1]+o[i*3+4])*2.5)/10}for(let i=0;i<o.length;i++)o[i]=q[i]}live[3]=o}
-   const wasSh=live.sh,L=live;delete L.sh;snap(d);d.s.push(L);stroke(cv.getContext("2d"),L,cv.width/1000);live=null;clearOv();{let my=0;const ys=L[3];for(let k=1;k<ys.length;k+=3)if(ys[k]>my)my=ys[k];const pn=document.getElementById("pzs"),sc=cv.clientWidth/1000,nearEnd=my>d.h-110,nearVis=!!pn&&cv.getBoundingClientRect().top+my*sc>pn.getBoundingClientRect().bottom-110*sc;if(nearEnd){d.h+=150;fit(cv,d,ov);paint(cv,d)}if(nearEnd||nearVis){try{(pn||window).scrollBy({top:Math.round(150*sc),behavior:"smooth"})}catch(x){}}}lazySave();if(wasSh)back()}
+   const wasSh=live.sh,L=live;delete L.sh;snap(d);d.s.push(L);stroke(cv.getContext("2d"),L,cv.width/1000);live=null;clearOv();lazySave();if(wasSh)back()}
   if(erasing){erasing=false;lazySave();back()}};
  ov.onpointerup=ov.onpointercancel=e=>{if(e.pointerType==="pen")setTimeout(()=>{window.__penDown=false},60);up(e)};ov.oncontextmenu=e=>e.preventDefault()}
 function syncTb(){document.querySelectorAll(".pen [data-t]").forEach(b=>b.classList.toggle("on",b.dataset.t===P.tool));
