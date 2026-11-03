@@ -1145,7 +1145,7 @@ function segsC(c,s,sc,a,n,fin){const p=s[3],T=tyOf(s),w=s[2]*T.m*sc,N=fin?n:1e9;
    c.lineWidth=Math.max(.4,w*(f1+(f2-f1)*(k-.5)/K));if(T.gr)c.globalAlpha=.7+.3*((((j*8+k)*2246822519)>>>0)%100)/100;c.beginPath();c.moveTo(px*sc,py*sc);c.lineTo(x*sc,y*sc);c.stroke();px=x;py=y}}
  return j}
 function style(c,t,col,w,sc,a){c.lineCap="round";c.lineJoin="round";c.strokeStyle=col;c.fillStyle=col;c.globalAlpha=t==="h"?a:1;if(t==="h")c.lineWidth=w*4*sc}
-function stroke(c,s,sc){const [t,col,w,p,al]=s,n=p.length/3;style(c,t,col,w,sc,s[6]!=null?s[6]:ALPHA[al==null?1:al]);
+function stroke(c,s,sc){const [t,col,w,p,al]=s,n=p.length/3;if(s[7]&&n>2){c.save();c.globalAlpha=.35;c.globalCompositeOperation="multiply";c.fillStyle=s[7];c.beginPath();c.moveTo(p[0]*sc,p[1]*sc);for(let i=1;i<n;i++)c.lineTo(p[i*3]*sc,p[i*3+1]*sc);c.closePath();c.fill();c.restore()}style(c,t,col,w,sc,s[6]!=null?s[6]:ALPHA[al==null?1:al]);
  if(t==="h"){c.globalCompositeOperation="multiply";c.beginPath();c.moveTo(p[0]*sc,p[1]*sc);if(n===1)c.lineTo(p[0]*sc+.1,p[1]*sc);for(let i=1;i<n-1;i++)c.quadraticCurveTo(p[i*3]*sc,p[i*3+1]*sc,(p[i*3]+p[i*3+3])/2*sc,(p[i*3+1]+p[i*3+4])/2*sc);if(n>1)c.lineTo(p[n*3-3]*sc,p[n*3-2]*sc);c.stroke();c.globalAlpha=1;c.globalCompositeOperation="source-over";return}
  if(n===1){c.beginPath();c.arc(p[0]*sc,p[1]*sc,w*tyOf(s).m*sc*wf(p[2])/2,0,7);c.fill();return}
  if(n===2){c.lineWidth=Math.max(.4,w*tyOf(s).m*sc);c.beginPath();c.moveTo(p[0]*sc,p[1]*sc);c.lineTo(p[3]*sc,p[4]*sc);c.stroke();return}
@@ -1478,10 +1478,10 @@ const I={p:ic('<path d="M4 20l1-4.2L16.6 4.2a2 2 0 0 1 2.8 0l.4.4a2 2 0 0 1 0 2.
  ed:ic('<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/>'),
  fd:ic('<path d="M6 15l6-6 6 6"/>'),
  mo:ic('<circle cx="5.5" cy="12" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/><circle cx="18.5" cy="12" r="1.2" fill="currentColor"/>')};
-const TBD=["p","m","e","s","sh","img","mic","paste","u","rd","pp","ap"];
-const TBS=(()=>{let o=null;try{o=JSON.parse(localStorage.getItem("abosalih-ptb5")||"null")}catch(e){}if(!o)o={o:[],h:[]};const h=(o.h||[]).filter(k=>TBD.includes(k));const ord=(o.o||[]).filter(k=>TBD.includes(k)&&!h.includes(k));for(const k of TBD)if(!ord.includes(k)&&!h.includes(k)){const ix=ord.indexOf("img");if(k==="mic"&&ix>=0)ord.splice(ix+1,0,k);else if(k==="paste"&&ord.indexOf("mic")>=0)ord.splice(ord.indexOf("mic")+1,0,k);else ord.push(k)}return{o:ord,h}})();
+const TBD=["p","m","e","s","sh","fl","img","mic","paste","u","rd","pp","ap"];
+const TBS=(()=>{let o=null;try{o=JSON.parse(localStorage.getItem("abosalih-ptb5")||"null")}catch(e){}if(!o)o={o:[],h:[]};const h=(o.h||[]).filter(k=>TBD.includes(k));const ord=(o.o||[]).filter(k=>TBD.includes(k)&&!h.includes(k));for(const k of TBD)if(!ord.includes(k)&&!h.includes(k)){const ix=ord.indexOf("img");if(k==="fl"&&ord.indexOf("sh")>=0)ord.splice(ord.indexOf("sh")+1,0,k);else if(k==="mic"&&ix>=0)ord.splice(ix+1,0,k);else if(k==="paste"&&ord.indexOf("mic")>=0)ord.splice(ord.indexOf("mic")+1,0,k);else ord.push(k)}return{o:ord,h}})();
 const tbSave=()=>{try{localStorage.setItem("abosalih-ptb5",JSON.stringify(TBS))}catch(e){}};
-const TBL={p:"Pen",m:"Highlighter",col:"Colour",e:"Eraser",s:"Select",sh:"Shapes",img:"Image",mic:"Record",paste:"Paste",u:"Undo",rd:"Redo",pp:"Paper",ap:"Add page"};
+const TBL={p:"Pen",m:"Highlighter",col:"Colour",e:"Eraser",s:"Select",sh:"Shapes",fl:"Fill",img:"Image",mic:"Record",paste:"Paste",u:"Undo",rd:"Redo",pp:"Paper",ap:"Add page"};
 const TBI={p:()=>I["n"+P.pt],m:()=>I.m,col:()=>`<i class="dot" style="display:block;width:20px;height:20px;border-radius:50%;background:${P.col}"></i>`,e:()=>I.e,s:()=>I.s,sh:()=>I.sh,img:()=>I.im,mic:()=>MICSVG,paste:()=>PSVG,u:()=>I.u,rd:()=>I.rd,pp:()=>I.gr,ap:()=>I.ap};
 const favIc=x=>x.t==="m"?I.m:I.nf;
 const PRE=(()=>{let o=null;try{o=JSON.parse(localStorage.getItem("abosalih-pre")||"null")}catch(e){}const ok=x=>x&&Array.isArray(x.c)&&x.c.length===3&&x.c.every(c=>/^#[0-9a-f]{6}$/i.test(c))&&Array.isArray(x.w)&&x.w.length===3&&x.w.every(w=>typeof w==="number"&&w>0);const d={p:{c:["#111111","#2563eb","#dc2626"],w:[2,3.5,6],ci:0,wi:1},m:{c:["#facc15","#4ade80","#f472b6"],w:[8,14,22],ci:0,wi:1,a:.5}};for(const k of ["p","m"])if(o&&ok(o[k])){d[k].c=o[k].c;d[k].w=o[k].w;if(o[k].ci>=0&&o[k].ci<3)d[k].ci=o[k].ci;if(o[k].wi>=0&&o[k].wi<3)d[k].wi=o[k].wi;if(k==="m"&&typeof o[k].a==="number")d[k].a=o[k].a}return d})();
@@ -1502,6 +1502,7 @@ const itemHTML=k=>{let h;
  else if(k==="img")h=`<button aria-label="Image" onclick="PEN.img()">${I.im}</button>`;
  else if(k==="paste")h=`<button aria-label="Paste" onclick="PEN.paste()">${PSVG}</button>`;
  else if(k==="mic")h=`<button id="pmic" class="pmicb" aria-label="Record audio" onclick="PEN.mic()">${MICSVG}</button>`;
+ else if(k==="fl")h=`<button id="pfl" aria-label="Fill shape" onclick="PEN.fillT()"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11l7-7 7 7-7 7z"/><path d="M5 11h14"/><path d="M19.5 15.5s1.5 2 1.5 3a1.5 1.5 0 0 1-3 0c0-1 1.5-3 1.5-3z" fill="currentColor"/></svg></button>`;
  else if(k==="u")h=`<button aria-label="Undo" onclick="PEN.undo()">${I.u}</button>`;
  else if(k==="rd")h=`<button aria-label="Redo" onclick="PEN.redo()">${I.rd}</button>`;
  else if(k==="pp")h=`<button aria-label="Paper" onclick="PEN.pop('pbp',event,this)">${I.gr}</button>`;
@@ -1637,6 +1638,12 @@ const zmOpen=b=>{if(document.getElementById("pzm")){zmClose();return}const m=doc
 document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("#pzr");if(!b)return;e.stopPropagation();zmOpen(b)},true);
 
 setInterval(()=>{const n=document.getElementById("pgnav");if(!n)return;if(!document.querySelector("#pgs .pgp")){n.style.removeProperty("top");n.style.removeProperty("bottom")}else return;const a=document.querySelector(".pen .pzw")||document.querySelector("#pgs .pgp:not([hidden])");let r=14;if(a){const b=a.getBoundingClientRect();if(b.width)r=Math.max(6,innerWidth-b.right+10)}const v=r+"px";if(n.style.getPropertyValue("--pgr")!==v)n.style.setProperty("--pgr",v)},300);
+
+/* ---- fill closed shapes ---- */
+PEN.fillT=()=>{P.fillOn=!P.fillOn;const b=document.getElementById("pfl");if(b)b.classList.toggle("on",!!P.fillOn);try{toast2(P.fillOn?"Fill: tap inside a shape":"Fill off")}catch(e){}};
+const fInPoly=(x,y,p)=>{let c=false;const n=p.length/3;for(let i=0,j=n-1;i<n;j=i++){const xi=p[i*3],yi=p[i*3+1],xj=p[j*3],yj=p[j*3+1];if(((yi>y)!==(yj>y))&&(x<(xj-xi)*(y-yi)/(yj-yi)+xi))c=!c}return c};
+const fClosed=p=>{const n=p.length/3;if(n<4)return false;let x1=1e9,y1=1e9,x2=-1e9,y2=-1e9;for(let i=0;i<n;i++){x1=Math.min(x1,p[i*3]);x2=Math.max(x2,p[i*3]);y1=Math.min(y1,p[i*3+1]);y2=Math.max(y2,p[i*3+1])}const dg=Math.hypot(x2-x1,y2-y1);if(dg<20)return false;return Math.hypot(p[0]-p[n*3-3],p[1]-p[n*3-2])<Math.max(25,.22*dg)};
+document.addEventListener("pointerdown",e=>{if(!P.fillOn||e.target.id!=="pco")return;e.preventDefault();e.stopImmediatePropagation();const cv=document.getElementById("pcv");if(!cv)return;const r=cv.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*1000,y=(e.clientY-r.top)/r.width*1000,d=D(cur());let best=-1,ba=1e18;d.s.forEach((s,i)=>{if(s[0]!=="p"||!fClosed(s[3])||!fInPoly(x,y,s[3]))return;const p=s[3];let a=0;const n=p.length/3;for(let k=0,j=n-1;k<n;j=k++)a+=(p[j*3]+p[k*3])*(p[j*3+1]-p[k*3+1]);a=Math.abs(a);if(a<ba){ba=a;best=i}});if(best<0){try{toast2("Tap inside a closed shape")}catch(_){}return}snap(d);const s=d.s[best],pc=String(P.colp||"").toLowerCase(),c=(!pc||pc==="#111111"||pc==="#000000")?s[1]:pc;if(s[7]&&s[7].toLowerCase()===String(c).toLowerCase())s.length=7;else{while(s.length<7)s.push(null);s[7]=c}try{paint(cv,d)}catch(_){}lazySave();try{navigator.vibrate&&navigator.vibrate(8)}catch(_){}},true);
 
 let _lp={x:0,y:0};document.addEventListener("pointermove",e=>{_lp.x=e.clientX;_lp.y=e.clientY},true);
 PEN.favDrag=(el,pid)=>{const rail=document.getElementById("pfav");if(!rail||!rail.contains(el))return;closeFM();const x0=_lp.x;el.classList.add("lift");try{el.setPointerCapture(pid)}catch(_){}try{navigator.vibrate&&navigator.vibrate(12)}catch(_){}let del=false;
