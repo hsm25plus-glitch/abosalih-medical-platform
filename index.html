@@ -1,4 +1,8 @@
-<!doctype html><html><head><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="AboSalih"><meta name="theme-color" content="#5b97f7"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><style>.qrow{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:12px var(--gx) 8px!important;width:calc(100% - 2*var(--gx))!important;box-sizing:border-box}.qrow .chip{width:100%;min-width:0;height:36px!important;padding:0 2px!important;font-size:12px!important;font-weight:700;overflow:hidden}.qrow .chip.on{background:#dbeafe!important}.qrow .chip:disabled{opacity:.35}@media(max-width:350px){.qrow .chip{font-size:11px!important}}</style></head><body>
+<!doctype html><html><head><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="AboSalih"><meta name="theme-color" content="#5b97f7"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><style>.qrow{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:12px var(--gx) 8px!important;width:calc(100% - 2*var(--gx))!important;box-sizing:border-box}.qrow .chip{width:100%;min-width:0;height:36px!important;padding:0 2px!important;font-size:12px!important;font-weight:700;overflow:hidden;transition:background .15s,color .15s,transform .1s;color:var(--ink)}.qrow .chip:active{transform:scale(.96)}.qrow .chip:disabled{opacity:.35}
+.qrow .c1{--k:#3b82f6}.qrow .c2{--k:#8b5cf6}.qrow .c3{--k:#16a34a}.qrow .c4{--k:#f59e0b}
+.qrow .chip{border-color:var(--k)!important;background:color-mix(in srgb,var(--k) 13%,var(--card))!important}
+.qrow .chip.on,.qrow .chip.go,.qrow .chip:active:not(:disabled){background:var(--k)!important;color:#fff!important}
+@media(max-width:350px){.qrow .chip{font-size:11px!important}}</style></head><body>
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -726,7 +730,7 @@ const o=q[4].map((t,k)=>{let c="opt";if(S.show){if(q[5]==null){if(k===S.pick)c+=
 const done=S.P[q[9]]?1:0;$("#bbm").classList.toggle("gold",S.bm.includes(q[9]));
 app.innerHTML=`<div class="qhead"><b>${S.key.startsWith("rec:")?S.key.slice(4):q[0]}</b>${S.pm?`<span class="pmc">${S.pm}</span>`:""}<button class="qn" onclick="qgrid()">Q${S.key.startsWith("rec:")&&RN[q[9]]?RN[q[9]]:S.i+1}/${N} ▾</button>${freqHTML(g,q)}${chipsHTML(q)}</div><div id="qg" hidden></div>
 <p class="q qbox">${q[3]}</p>${o}
-<div class="qrow"><button class="chip ${S.xp?"on":""}" onclick="belowTap()">Explanation</button><button class="chip" ${S.i>0?"":"disabled"} onclick="mv(-1)">‹ Previous</button><button class="chip" ${S.i<N-1?"":"disabled"} onclick="mv(1)">Next ›</button><button class="chip qnt ${S.nt[q[9]]||(window.hasDr&&hasDr(q[9]))?"on":""}" onclick="S.ne?PEN.done():PEN.open()">${S.ne?"Done":"Note"}</button></div>
+<div class="qrow"><button class="chip c1 ${S.xp?"on":""}" onclick="belowTap()">Explanation</button><button class="chip c2${window.__fl==="prev"?" go":""}" ${S.i>0?"":"disabled"} onclick="mv(-1,'prev')">‹ Previous</button><button class="chip c3${window.__fl==="next"?" go":""}" ${S.i<N-1?"":"disabled"} onclick="mv(1,'next')">Next ›</button><button class="chip c4 qnt ${S.ne||S.nt[q[9]]||(window.hasDr&&hasDr(q[9]))?"on":""}" onclick="S.ne?PEN.done():PEN.open()">${S.ne?"Done":"Note"}</button></div>
 ${S.xp?`<div class="expl">${q[6]||""}${(q[10]||[]).map(s=>`<img class="eimg" src="${s}">`).join("")}</div>`:""}
 
 ${toolsHTML(q)}`}
@@ -734,7 +738,7 @@ function pk(k){const g=S.L[S.i],q=Q[g];if(S.show){if(S.pick!=null&&S.pick!==q[5]
 function belowTap(){const g=S.L[S.i],q=Q[g];if(!S.show){S.show=true;S.xp=true;S.hw=false;if(!S.P[q[9]]){S.P[q[9]]=[S.pick==null?-1:S.pick,S.pick===q[5]];const dk=dayKey();S.act[dk]=(S.act[dk]||0)+1;save()}}else S.xp=!S.xp;quiz()}
 document.addEventListener("click",e=>{if(!e.target.isConnected)return;if(S.mode!=="quiz"||!S.L.length)return;if(e.target.closest("button,select,a,input,textarea,label,.opt,.qbox,.expl,.qtools,#qg,header,#em,#fpop,.noans,.freq,img"))return;try{if(String(getSelection()))return}catch(x){}const bx=document.querySelector(".qbox");if(!bx)return;const R=bx.getBoundingClientRect();return});
 function reveal(){const g=S.L[S.i];if(S.show){S.show=false;quiz();return}if(!S.P[Q[g][9]]){S.P[Q[g][9]]=[S.pick??-1,S.pick===Q[g][5]];const dk=dayKey();S.act[dk]=(S.act[dk]||0)+1;save()}S.show=true;quiz()}
-function mv(d){S.i+=d;load()}
+function mv(d,k){S.i+=d;window.__fl=k||null;load();if(k)setTimeout(()=>{window.__fl=null;document.querySelectorAll(".qrow .go").forEach(b=>b.classList.remove("go"))},520)}
 const PW="lib/pdf.worker.min.js";
 let PD=null,PN=1,PT=0,PNAME="",busy=false,pend=false;
 let SRCNP=null;
@@ -1117,7 +1121,7 @@ function init(){const cv=document.getElementById("pcv"),ov=document.getElementBy
    if(ids.length){sel={ids};drawSel()}else clearOv();return}
   clearTimeout(holdT);
   if(live){let s=live[3];if(!live.sh&&s.length>3){const o=[s[0],s[1],s[2]];for(let i=3;i<s.length;i+=3)if(Math.hypot(s[i]-o[o.length-3],s[i+1]-o[o.length-2])>=1.5)o.push(s[i],s[i+1],s[i+2]);live[3]=o}
-   const wasSh=live.sh,L=live;delete L.sh;snap(d);d.s.push(L);stroke(cv.getContext("2d"),L,cv.width/1000);live=null;clearOv();{let my=0;const ys=L[3];for(let k=1;k<ys.length;k+=3)if(ys[k]>my)my=ys[k];if(my>d.h-110){d.h+=100;fit(cv,d,ov);paint(cv,d)}}lazySave();if(wasSh)back()}
+   const wasSh=live.sh,L=live;delete L.sh;snap(d);d.s.push(L);stroke(cv.getContext("2d"),L,cv.width/1000);live=null;clearOv();{let my=0;const ys=L[3];for(let k=1;k<ys.length;k+=3)if(ys[k]>my)my=ys[k];if(my>d.h-110){d.h+=100;fit(cv,d,ov);paint(cv,d);try{window.scrollBy({top:Math.round(100*cv.clientWidth/1000),behavior:"smooth"})}catch(x){}}}lazySave();if(wasSh)back()}
   if(erasing){erasing=false;lazySave();back()}};
  ov.onpointerup=ov.onpointercancel=e=>{if(e.pointerType==="pen")setTimeout(()=>{window.__penDown=false},60);up(e)};ov.oncontextmenu=e=>e.preventDefault()}
 function syncTb(){document.querySelectorAll(".pen [data-t]").forEach(b=>b.classList.toggle("on",b.dataset.t===P.tool));
@@ -1177,7 +1181,7 @@ window.PEN={moreC(){P.more=!P.more;sizes();const el=document.getElementById("pzp
  more(){closePop();const d=D(cur());snap(d);d.h+=600;refit();lazySave()},
  bg(n){const d=D(cur());d.bg=n;closePop();refit();lazySave()},
  done(){P.z=1;P.edit=false;flush();const id=cur();const d=S.dr[id];if(d&&!d.s.length&&!(d.im&&d.im.length))delete S.dr[id];S.ne=false;document.body.classList.remove("penmode");save();quiz()},
- open(){S.ne=true;quiz();setTimeout(()=>{const c=document.getElementById("pcv");if(c)c.scrollIntoView({block:"center",behavior:"smooth"})},80)}};
+ open(){S.ne=true;quiz();setTimeout(()=>{const c=document.getElementById("pcv");if(!c)return;const d=D(cur()),w=c.clientWidth||300,t=document.getElementById("ptl"),th=t?t.offsetHeight:48,need=Math.round((innerHeight-th-24)/w*1000);if(d.h<need){d.h=need;refit();lazySave()}const a=t||c;window.scrollTo({top:Math.max(0,scrollY+a.getBoundingClientRect().top-8),behavior:"smooth"})},80)}};
 document.addEventListener("pointerdown",e=>{if(!e.target.closest||e.target.closest(".ppop,.pcb"))return;closePop()},true);
 const _home=window.home;window.home=function(){document.body.classList.remove("penmode");return _home.apply(this,arguments)};
 const eh=t=>String(t||"").replace(/&/g,"&amp;").replace(/</g,"&lt;");
