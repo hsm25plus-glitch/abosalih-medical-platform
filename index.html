@@ -1101,7 +1101,7 @@ function init(){const cv=document.getElementById("pcv"),ov=document.getElementBy
    const j=imAt(pt);if(j>=0){imi=j;drawIm();return}
    imi=-1;clearOv();setTool(P.last||"p");syncTb();return}
   if(P.tool==="e"){snap(d);erasing=true;eraseAt(pt);return}
-  if(P.tool==="s"){const b=sel&&sel.bb;
+  if(P.tool==="s"){{const now=Date.now(),l2=window.__lt2;window.__lt2={t:now,x:pt[0],y:pt[1]};if(l2&&now-l2.t<450&&Math.hypot(pt[0]-l2.x,pt[1]-l2.y)<40){const j=imAt(pt);if(j>=0){unsel();imi=j;setTool("i");syncTb();drawIm();window.__lt2=null;return}}}const b=sel&&sel.bb;
    if(b&&Math.hypot(pt[0]-b[2],pt[1]-b[3])<34){snap(d);mv={t:"sc",x0:b[0],y0:b[1],w:Math.max(1,b[2]-b[0]),h:Math.max(1,b[3]-b[1]),o:sel.ids.map(i=>d.s[i][3].slice())};return}
    if(b&&pt[0]>=b[0]&&pt[0]<=b[2]&&pt[1]>=b[1]&&pt[1]<=b[3]){snap(d);mv={t:"mv",x:pt[0],y:pt[1],o:sel.ids.map(i=>d.s[i][3].slice())};return}
    unsel();lasso=[[pt[0],pt[1]]];lasso.rect=P.selMode==="r";return}
@@ -1120,7 +1120,7 @@ function init(){const cv=document.getElementById("pcv"),ov=document.getElementBy
  const up=e=>{
   if(imv){const m=imv.m;imv=null;d.h=Math.max(d.h,Math.round(m.y+m.w*m.r+40));fit(cv,d,ov);paint(cv,d);drawIm();lazySave();return}
   if(mv){mv=null;lazySave();return}
-  if(lasso){const poly=lasso,isR=lasso.rect;lasso=null;let ids=[];
+  if(lasso){const poly=lasso,isR=lasso.rect;lasso=null;let ids=[];if(poly.length<=8){const q=poly[0],now=Date.now(),lt=window.__lt,dbl=lt&&now-lt.t<450&&Math.hypot(q[0]-lt.x,q[1]-lt.y)<40;window.__lt={t:now,x:q[0],y:q[1]};const j=imAt(q);if(j>=0){let sh=-1;for(let i=d.s.length-1;i>=0;i--)if(hit(d.s[i],q,10)){sh=i;break}if(dbl||sh<0){imi=j;setTool("i");syncTb();drawIm();return}}}
    if(isR&&poly.length>1){const a=poly[0],z=poly[poly.length-1],x1=Math.min(a[0],z[0]),x2=Math.max(a[0],z[0]),y1=Math.min(a[1],z[1]),y2=Math.max(a[1],z[1]);
     if(x2-x1>10||y2-y1>10)ids=d.s.map((s,i)=>i).filter(i=>{const p=d.s[i][3];let n=0,t=0;for(let k=0;k<p.length;k+=3){t++;if(p[k]>=x1&&p[k]<=x2&&p[k+1]>=y1&&p[k+1]<=y2)n++}return t&&n/t>=.4})}
    else if(!isR&&poly.length>4)ids=d.s.map((s,i)=>i).filter(i=>{const p=d.s[i][3];let n=0,t=0;for(let k=0;k<p.length;k+=3){t++;if(inPoly([p[k],p[k+1]],poly))n++}return t&&n/t>=.5});
