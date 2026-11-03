@@ -1079,7 +1079,7 @@ function init(){const cv=document.getElementById("pcv"),ov=document.getElementBy
   if(ch){d.s=out;if(!raf)raf=requestAnimationFrame(()=>{raf=0;paint(cv,d)})}};
  const isShape=()=>"laro".includes(P.tool)&&P.tool.length===1&&P.tool!=="p"&&P.tool!=="m"&&P.tool!=="e"&&P.tool!=="s";
 
- ov.onpointerdown=e=>{closePop();if(e.pointerType==="pen")P.seen=true;if(e.pointerType==="touch"&&P.seen)return;e.preventDefault();try{ov.setPointerCapture(e.pointerId)}catch(x){}
+ ov.onpointerdown=e=>{closePop();if(e.pointerType==="pen")P.seen=true;if(e.pointerType==="touch")return;e.preventDefault();try{ov.setPointerCapture(e.pointerId)}catch(x){}
   const pt=xy(e);
   if(P.tool==="i"){const m=d.im&&d.im[imi];if(m){const b=imb(m);
     if(Math.hypot(pt[0]-b[2],pt[1]-b[1])<36){snap(d);d.im.splice(imi,1);imi=-1;setTool(P.last||"p");syncTb();clearOv();paint(cv,d);lazySave();return}
