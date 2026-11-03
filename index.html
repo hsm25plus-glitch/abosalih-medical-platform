@@ -1046,7 +1046,7 @@ function init(){const cv=document.getElementById("pcv"),ov=document.getElementBy
    const rc=recog(live[3],mk);
    if(rc){live[3]=buildSh(rc);if(!mk)live[5]="b";live.snp=true;if(rc.k==="l")live.straight=true;else live.frozen=true;try{navigator.vibrate&&navigator.vibrate(8)}catch(e){}drawLive();return}
    if(mk){const p=live[3],n=p.length,ch=Math.hypot(p[n-3]-p[0],p[n-2]-p[1]);if(n<6||ch<30)return;live.straight=true;live.snp=true;live[3]=[p[0],p[1],5,p[n-3],p[n-2],5];drawLive()}},live&&live[0]==="h"?420:340)};
- const xy=e=>{const r=cv.getBoundingClientRect();return [Math.round((e.clientX-r.left)/r.width*1000),Math.round((e.clientY-r.top)/r.width*1000),e.pointerType==="pen"&&e.pressure>0?Math.max(1,Math.round(e.pressure*10)):5]};
+ const xy=e=>{const r=cv.getBoundingClientRect();return [Math.round((e.clientX-r.left)/r.width*10000)/10,Math.round((e.clientY-r.top)/r.width*10000)/10,e.pointerType==="pen"&&e.pressure>0?Math.max(1,Math.round(e.pressure*10)):5]};
  const clearOv=()=>oc.clearRect(0,0,ov.width,ov.height);
  const bar=document.getElementById("psel");
  const bbox=ids=>{let x1=1e9,y1=1e9,x2=-1e9,y2=-1e9;for(const i of ids){const p=d.s[i][3];for(let k=0;k<p.length;k+=3){x1=Math.min(x1,p[k]);x2=Math.max(x2,p[k]);y1=Math.min(y1,p[k+1]);y2=Math.max(y2,p[k+1])}}return [x1-14,y1-14,x2+14,y2+14]};
@@ -1109,7 +1109,7 @@ function init(){const cv=document.getElementById("pcv"),ov=document.getElementBy
    else{const dx=pt[0]-mv.x,dy=pt[1]-mv.y;sel.ids.forEach((i,k)=>{const o=mv.o[k],p=d.s[i][3];for(let j=0;j<o.length;j+=3){p[j]=o[j]+dx;p[j+1]=o[j+1]+dy}})}
    if(!raf)raf=requestAnimationFrame(()=>{raf=0;paint(cv,d);drawSel()});return}
   if(lasso){for(const ev of list){const pt=xy(ev);lasso.push([pt[0],pt[1]])}clearOv();const sc=ov.width/1000;oc.save();oc.setLineDash([6,5]);oc.strokeStyle="#2563eb";oc.lineWidth=2;oc.fillStyle="rgba(37,99,235,.07)";oc.beginPath();if(lasso.rect){const a=lasso[0],z=lasso[lasso.length-1];oc.rect(a[0]*sc,a[1]*sc,(z[0]-a[0])*sc,(z[1]-a[1])*sc)}else{lasso.forEach((q,i)=>i?oc.lineTo(q[0]*sc,q[1]*sc):oc.moveTo(q[0]*sc,q[1]*sc))}oc.fill();oc.stroke();oc.restore();return}
-  for(const ev of list){const pt=xy(ev);if(erasing)eraseAt(pt);else if(live&&live.sh)live[3]=shp(P.tool,sa,pt);else if(live&&live.frozen){}else if(live&&live.straight){let ex=pt[0],ey=pt[1];const x0=live[3][0],y0=live[3][1];if(Math.abs(ey-y0)<Math.abs(ex-x0)*.07)ey=y0;live[3]=[x0,y0,5,ex,ey,5]}else if(live){const q=live[3],k=q.length;if(live[0]==="p"&&k>=3){pt[0]=Math.round(q[k-3]*.4+pt[0]*.6);pt[1]=Math.round(q[k-2]*.4+pt[1]*.6)}q.push(...pt);if(anc&&Math.hypot(pt[0]-anc[0],pt[1]-anc[1])>14){anc=[pt[0],pt[1]];arm()}}}
+  for(const ev of list){const pt=xy(ev);if(erasing)eraseAt(pt);else if(live&&live.sh)live[3]=shp(P.tool,sa,pt);else if(live&&live.frozen){}else if(live&&live.straight){let ex=pt[0],ey=pt[1];const x0=live[3][0],y0=live[3][1];if(Math.abs(ey-y0)<Math.abs(ex-x0)*.07)ey=y0;live[3]=[x0,y0,5,ex,ey,5]}else if(live){const q=live[3],k=q.length;if(live[0]==="p"&&k>=3){pt[0]=Math.round((q[k-3]*.45+pt[0]*.55)*10)/10;pt[1]=Math.round((q[k-2]*.45+pt[1]*.55)*10)/10}q.push(...pt);if(anc&&Math.hypot(pt[0]-anc[0],pt[1]-anc[1])>14){anc=[pt[0],pt[1]];arm()}}}
   if(live)drawLive()};
  const up=e=>{
   if(imv){const m=imv.m;imv=null;d.h=Math.max(d.h,Math.round(m.y+m.w*m.r+40));fit(cv,d,ov);paint(cv,d);drawIm();lazySave();return}
@@ -1122,7 +1122,7 @@ function init(){const cv=document.getElementById("pcv"),ov=document.getElementBy
    if(!ids.length&&poly.length<=8){const j=imAt(poly[0]);if(j>=0){imi=j;setTool("i");syncTb();drawIm();return}}
    if(ids.length){sel={ids};drawSel()}else clearOv();return}
   clearTimeout(holdT);
-  if(live){let s=live[3];if(!live.sh&&s.length>3){const o=[s[0],s[1],s[2]];for(let i=3;i<s.length;i+=3)if(Math.hypot(s[i]-o[o.length-3],s[i+1]-o[o.length-2])>=1.5)o.push(s[i],s[i+1],s[i+2]);live[3]=o}
+  if(live){let s=live[3];if(!live.sh&&s.length>3){const o=[s[0],s[1],s[2]];for(let i=3;i<s.length;i+=3)if(Math.hypot(s[i]-o[o.length-3],s[i+1]-o[o.length-2])>=.8)o.push(s[i],s[i+1],s[i+2]);if(live[0]==="p")for(let pass=0;pass<2;pass++){const n=o.length/3;if(n<4)break;const q=o.slice();for(let i=1;i<n-1;i++){q[i*3]=Math.round((o[i*3-3]+2*o[i*3]+o[i*3+3])*2.5)/10;q[i*3+1]=Math.round((o[i*3-2]+2*o[i*3+1]+o[i*3+4])*2.5)/10}for(let i=0;i<o.length;i++)o[i]=q[i]}live[3]=o}
    const wasSh=live.sh,L=live;delete L.sh;snap(d);d.s.push(L);stroke(cv.getContext("2d"),L,cv.width/1000);live=null;clearOv();{let my=0;const ys=L[3];for(let k=1;k<ys.length;k+=3)if(ys[k]>my)my=ys[k];const pn=document.getElementById("pzs"),sc=cv.clientWidth/1000,nearEnd=my>d.h-110,nearVis=!!pn&&cv.getBoundingClientRect().top+my*sc>pn.getBoundingClientRect().bottom-110*sc;if(nearEnd){d.h+=150;fit(cv,d,ov);paint(cv,d)}if(nearEnd||nearVis){try{(pn||window).scrollBy({top:Math.round(150*sc),behavior:"smooth"})}catch(x){}}}lazySave();if(wasSh)back()}
   if(erasing){erasing=false;lazySave();back()}};
  ov.onpointerup=ov.onpointercancel=e=>{if(e.pointerType==="pen")setTimeout(()=>{window.__penDown=false},60);up(e)};ov.oncontextmenu=e=>e.preventDefault()}
