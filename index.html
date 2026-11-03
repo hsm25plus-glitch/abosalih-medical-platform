@@ -2,7 +2,7 @@
 .qrow .c1{--k:#3b82f6}.qrow .c2{--k:#8b5cf6}.qrow .c3{--k:#16a34a}.qrow .c4{--k:#f59e0b}
 .qrow .chip{border-color:var(--k)!important;background:color-mix(in srgb,var(--k) 13%,var(--card))!important}
 .qrow .chip.on,.qrow .chip.go,.qrow .chip:active:not(:disabled){background:var(--k)!important;color:#fff!important}
-@media(max-width:350px){.qrow .chip{font-size:11px!important}}</style></head><body>
+@media(max-width:350px){.qrow .chip{font-size:11px!important}}</style><style>body.npLock{overflow:hidden!important;overscroll-behavior:none}.npWrap{display:flex;flex-direction:column;min-height:0}.npTop{flex:0 1 auto;max-height:calc(100% - 300px);min-height:120px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}.npPane{flex:1 1 0;min-height:260px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}.npPane .pen .ptl{top:0}</style></head><body>
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -692,7 +692,7 @@ function zipStore(files){const E=new TextEncoder(),parts=[],cen=[];let off=0;
  const e=new DataView(new ArrayBuffer(22));e.setUint32(0,0x06054b50,true);e.setUint16(8,files.length,true);e.setUint16(10,files.length,true);e.setUint32(12,cs,true);e.setUint32(16,off,true);
  return new Blob([...parts,...cen,e.buffer],{type:"application/zip"})}
 function buildScope(){$("#sc").innerHTML=`<option value="all">All</option><option value="rec*">All years</option><option value="ref*">All Reference</option><optgroup label="Subjects">`+SUBJ.map(v=>`<option value="sub|${v}">${v}</option>`).join("")+`</optgroup><optgroup label="Years">`+recalls().map(v=>`<option value="rec|${v}">${v}</option>`).join("")+`</optgroup>`}
-function setMode(m){S.mode=m;hdr();const b=$("#bstar");if(b)b.style.outline=m==="bmlist"?"3px solid var(--gold)":""}
+function setMode(m){S.mode=m;if(m!=="quiz")document.body.classList.remove("npLock");hdr();const b=$("#bstar");if(b)b.style.outline=m==="bmlist"?"3px solid var(--gold)":""}
 function goHome(){$("#sq").value="";$("#hs").hidden=true;hdr();home()}
 function APPN(){if(window._an!=null)return window._an;const seen=new Set();let n=0;for(const q of Q){if(q[0]!=="Recall"){n++;continue}const p=RP[q[9]];if(!p){n++;continue}const k=p.map(x=>x[1]).sort()[0];if(!seen.has(k)){seen.add(k);n++}}return window._an=n}
 function home(){setMode("home");
@@ -724,16 +724,18 @@ function openList(t,v){S.rm=false;S.pm="";const en=EN(t,v),ix=en.map(e=>e[0]);S.
 function openRes(k){S.rm=false;S.pm="";const g=window.res[k];S.L=window.scopeIx;S.LR=[];S.key="";S.title=$("#sc").selectedOptions[0].text;S.i=S.L.indexOf(g);load()}
 function load(){S.pick=null;S.show=false;S.xp=false;S.hw=false;if(S.key){S.pos[S.key]=S.i;save()}quiz();scrollTo(0,0)}
 function back(){if(S.mode==="quiz"&&S.key===""&&$("#sq").value.trim())find();else{$("#sq").value="";home()}}
-function quiz(){setMode("quiz");
+function quiz(){setMode("quiz");document.body.classList.toggle("npLock",!!S.ne);if(S.ne)scrollTo(0,0);
 const g=S.L[S.i],q=Q[g],N=S.L.length;
 const o=q[4].map((t,k)=>{let c="opt";if(S.show){if(q[5]==null){if(k===S.pick)c+=" sel"}else if(k===q[5])c+=" right";else if(k===S.pick&&!S.hw)c+=" wrong"}else if(k===S.pick)c+=" sel";return `<button class="${c}" onclick="pk(${k})"><b>${String.fromCharCode(65+k)}.</b> ${t}</button>`}).join("");
 const done=S.P[q[9]]?1:0;$("#bbm").classList.toggle("gold",S.bm.includes(q[9]));
 app.innerHTML=`<div class="qhead"><b>${S.key.startsWith("rec:")?S.key.slice(4):q[0]}</b>${S.pm?`<span class="pmc">${S.pm}</span>`:""}<button class="qn" onclick="qgrid()">Q${S.key.startsWith("rec:")&&RN[q[9]]?RN[q[9]]:S.i+1}/${N} ▾</button>${freqHTML(g,q)}${chipsHTML(q)}</div><div id="qg" hidden></div>
-<p class="q qbox">${q[3]}</p>${o}
+${S.ne?'<div class="npWrap"><div class="npTop">':""}<p class="q qbox">${q[3]}</p>${o}
 <div class="qrow"><button class="chip c1 ${S.xp?"on":""}" onclick="belowTap()">Explanation</button><button class="chip c2${window.__fl==="prev"?" go":""}" ${S.i>0?"":"disabled"} onclick="mv(-1,'prev')">‹ Previous</button><button class="chip c3${window.__fl==="next"?" go":""}" ${S.i<N-1?"":"disabled"} onclick="mv(1,'next')">Next ›</button><button class="chip c4 qnt ${S.ne||S.nt[q[9]]||(window.hasDr&&hasDr(q[9]))?"on":""}" onclick="S.ne?PEN.done():PEN.open()">${S.ne?"Done":"Note"}</button></div>
-${S.xp?`<div class="expl">${q[6]||""}${(q[10]||[]).map(s=>`<img class="eimg" src="${s}">`).join("")}</div>`:""}
+${S.xp?`<div class="expl">${q[6]||""}${(q[10]||[]).map(s=>`<img class="eimg" src="${s}">`).join("")}</div>`:""}${S.ne?'</div><div class="npPane">':""}
 
-${toolsHTML(q)}`}
+${toolsHTML(q)}${S.ne?"</div></div>":""}`;npFit()}
+function npFit(){const w=document.querySelector(".npWrap");if(!w)return;w.style.height=Math.max(220,innerHeight-w.getBoundingClientRect().top-8)+"px"}
+addEventListener("resize",()=>{if(S.ne)npFit()});
 function pk(k){const g=S.L[S.i],q=Q[g];if(S.show){if(S.pick!=null&&S.pick!==q[5]&&(k===S.pick||k===q[5])){S.hw=!S.hw;quiz()}return}S.pick=k;quiz()}
 function belowTap(){const g=S.L[S.i],q=Q[g];if(!S.show){S.show=true;S.xp=true;S.hw=false;if(!S.P[q[9]]){S.P[q[9]]=[S.pick==null?-1:S.pick,S.pick===q[5]];const dk=dayKey();S.act[dk]=(S.act[dk]||0)+1;save()}}else S.xp=!S.xp;quiz()}
 document.addEventListener("click",e=>{if(!e.target.isConnected)return;if(S.mode!=="quiz"||!S.L.length)return;if(e.target.closest("button,select,a,input,textarea,label,.opt,.qbox,.expl,.qtools,#qg,header,#em,#fpop,.noans,.freq,img"))return;try{if(String(getSelection()))return}catch(x){}const bx=document.querySelector(".qbox");if(!bx)return;const R=bx.getBoundingClientRect();return});
@@ -1062,7 +1064,7 @@ function init(){const cv=document.getElementById("pcv"),ov=document.getElementBy
  const tdist=t=>Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY);
  let lpt=0,lp0=null;const pb=document.getElementById("ppaste");if(pb)pb.firstElementChild.onclick=()=>{const p=pb._p;PENPASTE(p)};
  ov.addEventListener("touchstart",e=>{if(e.touches.length>1||e.touches[0].touchType==="stylus"||window.__penDown)e.preventDefault();clearTimeout(lpt);lp0=null;if(pb)pb.hidden=true;if(e.touches.length===1){const t=e.touches[0];if(t.touchType!=="stylus"){lp0=[t.clientX,t.clientY];lpt=setTimeout(()=>{if(!lp0||!pb||P.tool==="e"||P.tool==="s"||P.tool==="i")return;if(live&&live[3].length>9)return;if(live){live=null;lastN=0;clearTimeout(holdT);clearOv();paint(cv,d)}const r=zw.getBoundingClientRect(),x=lp0[0]-r.left,y=lp0[1]-r.top;pb._p=[Math.round(x/r.width*1000),Math.round(y/r.width*1000)];pb.hidden=false;const W=pb.offsetWidth||80;pb.style.left=Math.max(4,Math.min(x-W/2,r.width-W-4))+"px";pb.style.top=Math.max(4,y-70)+"px";try{navigator.vibrate&&navigator.vibrate(10)}catch(z){}},550)}}if(e.touches.length===2){if(live){live=null;lastN=0;clearTimeout(holdT);paint(cv,d)}erasing=false;lasso=null;mv=null;imv=null;const t=e.touches;pz={d0:tdist(t),z0:P.z,mx:(t[0].clientX+t[1].clientX)/2,my:(t[0].clientY+t[1].clientY)/2};clearOv()}},{passive:false});
- ov.addEventListener("touchmove",e=>{if(pz||e.touches.length>1||e.touches[0].touchType==="stylus"||window.__penDown)e.preventDefault();if(lp0&&e.touches[0]&&Math.hypot(e.touches[0].clientX-lp0[0],e.touches[0].clientY-lp0[1])>10){clearTimeout(lpt);lp0=null}if(pz&&e.touches.length===2){const t=e.touches,mx=(t[0].clientX+t[1].clientX)/2,my=(t[0].clientY+t[1].clientY)/2;setZoom(pz.z0*tdist(t)/pz.d0,mx,my);zs.scrollLeft-=mx-pz.mx;window.scrollBy(0,-(my-pz.my));pz.mx=mx;pz.my=my}},{passive:false});
+ ov.addEventListener("touchmove",e=>{if(pz||e.touches.length>1||e.touches[0].touchType==="stylus"||window.__penDown)e.preventDefault();if(lp0&&e.touches[0]&&Math.hypot(e.touches[0].clientX-lp0[0],e.touches[0].clientY-lp0[1])>10){clearTimeout(lpt);lp0=null}if(pz&&e.touches.length===2){const t=e.touches,mx=(t[0].clientX+t[1].clientX)/2,my=(t[0].clientY+t[1].clientY)/2;setZoom(pz.z0*tdist(t)/pz.d0,mx,my);zs.scrollLeft-=mx-pz.mx;(document.querySelector(".npPane")||window).scrollBy(0,-(my-pz.my));pz.mx=mx;pz.my=my}},{passive:false});
  const pend=e=>{clearTimeout(lpt);if(pz&&e.touches.length<2){pz=null;fit(cv,d,ov);paint(cv,d);if(sel)drawSel();else if(imi>=0)drawIm()}};
  ov.addEventListener("touchend",pend);ov.addEventListener("touchcancel",pend);
  zl();
@@ -1121,7 +1123,7 @@ function init(){const cv=document.getElementById("pcv"),ov=document.getElementBy
    if(ids.length){sel={ids};drawSel()}else clearOv();return}
   clearTimeout(holdT);
   if(live){let s=live[3];if(!live.sh&&s.length>3){const o=[s[0],s[1],s[2]];for(let i=3;i<s.length;i+=3)if(Math.hypot(s[i]-o[o.length-3],s[i+1]-o[o.length-2])>=1.5)o.push(s[i],s[i+1],s[i+2]);live[3]=o}
-   const wasSh=live.sh,L=live;delete L.sh;snap(d);d.s.push(L);stroke(cv.getContext("2d"),L,cv.width/1000);live=null;clearOv();{let my=0;const ys=L[3];for(let k=1;k<ys.length;k+=3)if(ys[k]>my)my=ys[k];if(my>d.h-110){d.h+=100;fit(cv,d,ov);paint(cv,d);try{window.scrollBy({top:Math.round(100*cv.clientWidth/1000),behavior:"smooth"})}catch(x){}}}lazySave();if(wasSh)back()}
+   const wasSh=live.sh,L=live;delete L.sh;snap(d);d.s.push(L);stroke(cv.getContext("2d"),L,cv.width/1000);live=null;clearOv();{let my=0;const ys=L[3];for(let k=1;k<ys.length;k+=3)if(ys[k]>my)my=ys[k];const pn=document.querySelector(".npPane"),sc=cv.clientWidth/1000,nearEnd=my>d.h-110,nearVis=!!pn&&cv.getBoundingClientRect().top+my*sc>pn.getBoundingClientRect().bottom-110*sc;if(nearEnd){d.h+=150;fit(cv,d,ov);paint(cv,d)}if(nearEnd||nearVis){try{(pn||window).scrollBy({top:Math.round(150*sc),behavior:"smooth"})}catch(x){}}}lazySave();if(wasSh)back()}
   if(erasing){erasing=false;lazySave();back()}};
  ov.onpointerup=ov.onpointercancel=e=>{if(e.pointerType==="pen")setTimeout(()=>{window.__penDown=false},60);up(e)};ov.oncontextmenu=e=>e.preventDefault()}
 function syncTb(){document.querySelectorAll(".pen [data-t]").forEach(b=>b.classList.toggle("on",b.dataset.t===P.tool));
@@ -1181,7 +1183,7 @@ window.PEN={moreC(){P.more=!P.more;sizes();const el=document.getElementById("pzp
  more(){closePop();const d=D(cur());snap(d);d.h+=600;refit();lazySave()},
  bg(n){const d=D(cur());d.bg=n;closePop();refit();lazySave()},
  done(){P.z=1;P.edit=false;flush();const id=cur();const d=S.dr[id];if(d&&!d.s.length&&!(d.im&&d.im.length))delete S.dr[id];S.ne=false;document.body.classList.remove("penmode");save();quiz()},
- open(){S.ne=true;quiz();setTimeout(()=>{const c=document.getElementById("pcv");if(!c)return;const d=D(cur()),w=c.clientWidth||300,t=document.getElementById("ptl"),th=t?t.offsetHeight:48,need=Math.round((innerHeight-th-24)/w*1000);if(d.h<need){d.h=need;refit();lazySave()}const a=t||c;window.scrollTo({top:Math.max(0,scrollY+a.getBoundingClientRect().top-8),behavior:"smooth"})},80)}};
+ open(){S.ne=true;quiz();setTimeout(()=>{const c=document.getElementById("pcv"),pn=document.querySelector(".npPane");if(!c||!pn)return;const d=D(cur()),w=c.clientWidth||300,t=document.getElementById("ptl"),th=t?t.offsetHeight:48,need=Math.round((pn.clientHeight-th)/w*1000);if(d.h<need){d.h=need;refit();lazySave()}pn.scrollTop=0},80)}};
 document.addEventListener("pointerdown",e=>{if(!e.target.closest||e.target.closest(".ppop,.pcb"))return;closePop()},true);
 const _home=window.home;window.home=function(){document.body.classList.remove("penmode");return _home.apply(this,arguments)};
 const eh=t=>String(t||"").replace(/&/g,"&amp;").replace(/</g,"&lt;");
