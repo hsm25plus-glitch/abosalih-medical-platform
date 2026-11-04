@@ -886,7 +886,7 @@ function saveNote(){const id=Q[S.L[S.i]][9],v=$("#nt").value.trim();if(v)S.nt[id
 /* study tab */
 function studyHTML(){S.sqs="";S.ssc="all";if(S.ssc.startsWith("rec|")&&!recalls().includes(S.ssc.slice(4)))S.ssc="all";const sc=S.ssc,base=scopeList(sc),t=(S.act||{})[dayKey()]||0,g=S.goal||20,de=daysToExam(),st=streak();
 const due=base.filter(isDue),wr=base.filter(isWrong),hy=base.filter(i=>frq(i)>=2),un=base.filter(i=>!S.P[Q[i][9]]),fg=base.filter(isFlag),kx=base.filter(i=>Q[i][5]!=null);
-const items=[["❌","Mistakes",wr.length,"wr"],["⭐","High-yield",hy.length,"hy"],["🆕","Unanswered",un.length,"un"],["🚩","Flagged",fg.length,"fg"],["🎓","Mock Exam","10 exams","mk"],["📊","Stats","","st"]];
+const items=[["❌","Mistakes",wr.length,"wr"],["⭐","High-yield",hy.length,"hy"],["🆕","Unanswered",un.length,"un"],["🚩","Flagged",fg.length,"fg"],["🎓","Mock Exam","10 exams","mk"],["📊","Stats","","st"],["💾","Backup","","bk"]];
 const opts=`<option value="all">All Qs</option><option value="rec*">All years</option>`+SUBJ.map(v=>`<option value="sub|${v}">${v}</option>`).join("")+recalls().map(r=>`<option value="rec|${r}">${r}</option>`).join("");
 if(S.ssc&&S.ssc.startsWith("sub|")&&!SUBJ.includes(S.ssc.slice(4)))S.ssc="all";
 const dn=base.filter(i=>S.P[Q[i][9]]).length,pc2=base.length?Math.round(dn/base.length*100):0;
@@ -964,10 +964,10 @@ app.innerHTML=`
 function expJSON(){const ed={};for(const k in (S.ed||{})){const e=S.ed[k];ed[k]={q:e.q,o:e.o,a:e.a,e:e.e}}return JSON.stringify({v:1,P:S.P,pos:S.pos,bm:S.bm,act:S.act,rv:S.rv,fl:S.fl,nt:S.nt,dr:S.dr,goal:S.goal,exam:S.exam,ed})}
 function showSet(msg){setMode("set");app.innerHTML=`<button class="btn backb" onclick="S.nav='stu';save();home()">‹ Study</button>
 <h4 class="sh">Goals</h4><div class="srow2"><label>Daily goal (questions)<input id="sg" type="number" min="1" max="500" value="${S.goal}"></label><label>Exam date<input id="se" type="date" value="${S.exam||""}"></label><button class="btn" onclick="S.goal=Math.max(1,+$('#sg').value||20);S.exam=$('#se').value;save();showSet('Saved')">Save</button></div>
-<h4 class="sh">Backup</h4><textarea id="bj" rows="4" readonly>${expJSON().replace(/&/g,"&amp;").replace(/</g,"&lt;")}</textarea><div class="row nav3"><button class="btn" onclick="bkCopy()">Copy</button><span></span></div>
+<h4 class="sh">Backup</h4><div class="note">One file with your answers, notes, drawings and voice recordings. Keep it in your email or Drive.</div><div class="row nav3"><button class="btn" id="bkdl" onclick="BK2.dl()">⬇ Download backup</button><span></span><span></span></div>
 <h4 class="sh">Sync</h4><div class="note">${window.SYNC?SYNC.info():""}</div><div class="row nav3"><button class="btn" onclick="SYNC.push();showSet('Sync requested')">Sync now</button><span></span><span></span></div>
 <h4 class="sh">Automatic daily copies</h4><div class="row" style="flex-wrap:wrap;gap:6px">${snapList().map(d=>`<button class="btn" onclick="snapRestore('${d}')">${d}</button>`).join("")||"<span class=\"note\">None yet. Saved once a day on this device.</span>"}</div>
-<h4 class="sh">Restore</h4><textarea id="bi" rows="3" placeholder="Paste a backup here"></textarea><div class="row nav3"><button class="btn" onclick="bkImp()">Restore</button><span></span><span></span></div>
+<h4 class="sh">Restore</h4><div class="note">Choose a backup file. Everything in it is added to this device.</div><div class="row nav3"><label class="btn" style="text-align:center;cursor:pointer">⬆ Choose backup file<input type="file" accept=".json,application/json,text/plain" hidden onchange="BK2.restore(this.files[0]);this.value=''"></label><span></span><span></span></div>
 <h4 class="sh">Reset a subject</h4><div class="srow2"><select id="rs">${SUBJ.map(v=>`<option>${v}</option>`).join("")}</select><button class="btn" id="rsb" onclick="bkReset()">Reset progress</button></div><div class="note" id="smsg">${msg||""}</div>`}
 function bkCopy(){S.bkd=Date.now();save();const t=$("#bj");t.select();try{navigator.clipboard.writeText(t.value).then(()=>$("#smsg").textContent="Copied",()=>{document.execCommand("copy");$("#smsg").textContent="Copied"})}catch(e){document.execCommand("copy");$("#smsg").textContent="Copied"}}
 function bkImp(){try{const d=JSON.parse($("#bi").value.trim());if(!d||d.v!==1)throw 0;Object.assign(S.P,d.P||{});Object.assign(S.pos,d.pos||{});S.bm=[...new Set([...(S.bm||[]),...(d.bm||[])])];for(const k in d.act||{})S.act[k]=Math.max(S.act[k]||0,d.act[k]);Object.assign(S.rv,d.rv||{});Object.assign(S.fl,d.fl||{});Object.assign(S.nt,d.nt||{});Object.assign(S.dr,d.dr||{});if(d.goal)S.goal=d.goal;if(d.exam)S.exam=d.exam;save();showSet("Restored")}catch(e){$("#smsg").textContent="Not a valid backup"}}
@@ -1714,4 +1714,43 @@ window.dashHTML=()=>{try{const subs=(typeof SUBJ!=="undefined"?SUBJ:[]);let n=0,
  return '<div class="dsh"><div class="dc"><h4>Your progress</h4><div class="kp"><div><b>'+d+'</b><small>of '+n+' done</small></div><div><b>'+(k?Math.round(c/k*100)+"%":"–")+'</b><small>accuracy</small></div><div><b>'+st+'</b><small>day streak</small></div><div><b>'+(de!=null&&de>=0?de:"–")+'</b><small>days to exam</small></div></div></div>'+
  '<div class="dc"><h4>Today</h4><div class="gt"><span>'+t+' / '+g+' questions</span><span>'+Math.min(100,Math.round(t/g*100))+'%</span></div><div class="gl"><i style="width:'+Math.min(100,t/g*100)+'%"></i></div><div class="wk">'+days.map(x=>'<div class="'+(x[3]?"td":"")+'"><i style="height:'+Math.round(x[2]/mx*100)+'%"></i><small>'+x[1]+'</small></div>').join("")+'</div></div>'+
  '<div class="dc"><h4>Review now</h4><div class="ac"><button type="button" onclick="S.ssc=\'all\';studyGo(\'wr\')"'+(wr?"":" disabled")+'>❌ Mistakes <b>'+wr+'</b></button><button type="button" onclick="S.ssc=\'all\';studyGo(\'fg\')"'+(fg?"":" disabled")+'>🚩 Flagged <b>'+fg+'</b></button><button type="button" onclick="S.ssc=\'all\';studyGo(\'due\')"'+(du?"":" disabled")+'>🔁 Due today <b>'+du+'</b></button><button type="button" onclick="S.ssc=\'all\';studyGo(\'r20\')">🎲 Random 20</button></div></div>'+
- '<div class="dc"><h4>By subject</h4>'+(sr||'<div class="mu">Start answering to see your progress.</div>')+'<div class="mu" style="margin-top:6px">Bar = done · % = correct</div></div></div>'}catch(e){console.error(e);return ""}}})();</script><script id="np-lock">(()=>{const chk=()=>{const on=!!document.querySelector("main .npWrap");document.documentElement.classList.toggle("nplk",on);if(on&&(scrollY||document.documentElement.scrollTop))scrollTo(0,0)};setInterval(chk,250);addEventListener("scroll",()=>{if(document.documentElement.classList.contains("nplk")&&scrollY)scrollTo(0,0)},{passive:true});new MutationObserver(chk).observe(document.body,{childList:true,subtree:false});chk()})();</script><script>if("serviceWorker" in navigator){addEventListener("load",()=>{navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(r=>{try{r.update()}catch(e){}}).catch(()=>{})})}addEventListener("load",()=>setTimeout(async()=>{try{if(!navigator.onLine||typeof OFF==="undefined")return;await OFF.init();OFF.saveAll()}catch(e){}},2500))</script></body></html>
+ '<div class="dc"><h4>By subject</h4>'+(sr||'<div class="mu">Start answering to see your progress.</div>')+'<div class="mu" style="margin-top:6px">Bar = done · % = correct</div></div></div>'}catch(e){console.error(e);return ""}}})();</script><script id="np-lock">(()=>{const chk=()=>{const on=!!document.querySelector("main .npWrap");document.documentElement.classList.toggle("nplk",on);if(on&&(scrollY||document.documentElement.scrollTop))scrollTo(0,0)};setInterval(chk,250);addEventListener("scroll",()=>{if(document.documentElement.classList.contains("nplk")&&scrollY)scrollTo(0,0)},{passive:true});new MutationObserver(chk).observe(document.body,{childList:true,subtree:false});chk()})();</script><script id="bk2">/* ===== File backup / restore (answers, notes, drawings, voice) ===== */
+window.BK2=(()=>{
+const PF=K.replace(/-qbank-v2$/,"");
+const msg=t=>{const e=document.getElementById("smsg");if(e)e.textContent=t};
+const audDB=()=>new Promise((ok,no)=>{const r=indexedDB.open(PF+"_au",1);r.onupgradeneeded=()=>r.result.createObjectStore("a");r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)});
+const audAll=async()=>{const db=await audDB();return new Promise((ok,no)=>{const o=[],c=db.transaction("a").objectStore("a").openCursor();c.onsuccess=()=>{const x=c.result;if(x){o.push([x.key,x.value]);x.continue()}else ok(o)};c.onerror=()=>no(c.error)})};
+const audPut=async(k,v)=>{const db=await audDB();return new Promise((ok,no)=>{const t=db.transaction("a","readwrite");t.objectStore("a").put(v,k);t.oncomplete=ok;t.onerror=()=>no(t.error)})};
+const toURL=b=>new Promise(ok=>{const f=new FileReader();f.onload=()=>ok(f.result);f.readAsDataURL(b)});
+async function make(){try{save(true)}catch(e){}
+ const ls={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith(PF)&&!k.endsWith("-snap"))ls[k]=localStorage.getItem(k)}
+ const au=[];try{for(const[k,v]of await audAll())au.push([k,v instanceof Blob?{t:v.type,d:await toURL(v)}:v])}catch(e){}
+ return {kind:"qbank-backup",v:2,app:PF,date:new Date().toISOString(),ls,au}}
+async function dl(){const b=document.getElementById("bkdl");if(b){b.disabled=true;b.textContent="Preparing…"}
+ try{const d=await make(),day=new Date().toISOString().slice(0,10),
+  name=((document.querySelector(".brand b")||{}).textContent||"QBank").replace(/[^A-Za-z0-9]+/g,"")+"-backup-"+day+".json",
+  blob=new Blob([JSON.stringify(d)],{type:"application/json"});let done=false;
+  try{const D=window.claude&&claude.use?await claude.use("downloads"):null;if(D){await D.save({filename:name,data:blob});done=true}}catch(e){if(e&&e.code&&e.code!=="unavailable"){msg("Download cancelled");return}}
+  if(!done){const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),60000)}
+  S.bkd=Date.now();try{save(true)}catch(e){}
+  const nn=Object.keys(S.dr||{}).length;msg("✓ Backup saved: "+name+" — "+Object.keys(S.P||{}).length+" answers, "+nn+" notes, "+d.au.length+" recordings")}
+ catch(e){msg("Backup failed: "+(e&&e.message||e))}
+ finally{if(b){b.disabled=false;b.textContent="⬇ Download backup"}}}
+function mergeState(d){if(!d)return;const A=(k)=>{if(d[k]&&typeof d[k]==="object")S[k]=Object.assign(S[k]||{},d[k])};
+ ["P","pos","rv","fl","nt","dr","ed","mk","pp","lb"].forEach(A);
+ S.bm=[...new Set([...(S.bm||[]),...(d.bm||[])])];S.act=S.act||{};for(const k in d.act||{})S.act[k]=Math.max(S.act[k]||0,d.act[k]);
+ if(d.goal)S.goal=d.goal;if(d.exam)S.exam=d.exam;if(!S.last&&d.last)S.last=d.last}
+async function restore(f){if(!f)return;msg("Restoring…");
+ try{const d=JSON.parse(await f.text());
+  if(d&&d.v===1&&d.P){mergeState(d);save();msg("✓ Restored");return}
+  if(!d||d.kind!=="qbank-backup")throw new Error("This is not a backup file");
+  if(d.app&&d.app!==PF)throw new Error("This backup belongs to another app ("+d.app+")");
+  const main=d.ls&&d.ls[K];if(main){try{mergeState((JSON.parse(main)||{}).s)}catch(e){}}
+  for(const k in d.ls||{})if(k!==K&&k.startsWith(PF))try{localStorage.setItem(k,d.ls[k])}catch(e){}
+  let na=0;for(const[k,v]of d.au||[]){try{await audPut(k,v&&v.d?await (await fetch(v.d)).blob():v);na++}catch(e){}}
+  try{if(window.AU)AU.cache={}}catch(e){}
+  save();msg("✓ Restored: "+Object.keys(S.P||{}).length+" answers, "+Object.keys(S.dr||{}).length+" notes, "+na+" recordings. Reloading…");
+  setTimeout(()=>location.reload(),1800)}
+ catch(e){msg("✕ "+(e&&e.message||"Not a valid backup"))}}
+return{dl,restore,make}})();
+</script><script>if("serviceWorker" in navigator){addEventListener("load",()=>{navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(r=>{try{r.update()}catch(e){}}).catch(()=>{})})}addEventListener("load",()=>setTimeout(async()=>{try{if(!navigator.onLine||typeof OFF==="undefined")return;await OFF.init();OFF.saveAll()}catch(e){}},2500))</script></body></html>
